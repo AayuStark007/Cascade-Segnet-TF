@@ -102,8 +102,20 @@ def writeImage(image, filename):
     r = image.copy()
     g = image.copy()
     b = image.copy()
-    label_colours = np.array([Sky, Building, Pole, Road, Pavement, Tree, SignSymbol, Fence, Car, Pedestrian, Bicyclist, Unlabelled])
-    for l in range(12):
+    label_colours = np.array([\
+        Sky,\
+        Building,\
+        # Pole,\
+        Road,\
+        # Pavement,\
+        Tree,\
+        # SignSymbol,\
+        Fence,\
+        # Car,\
+        # Pedestrian,\
+        # Bicyclist,\
+        Unlabelled])
+    for l in range(6):
         r[image==l] = label_colours[l,0]
         g[image==l] = label_colours[l,1]
         b[image==l] = label_colours[l,2]
@@ -132,14 +144,14 @@ def get_hist(predictions, labels):
   num_class = predictions.shape[3]
   batch_size = predictions.shape[0]
 
-  for i in range(batch_size):
-    for j in range(predictions.shape[1]):
-      for k in range(predictions.shape[2]):
-        for l in range(num_class):
-          # if (predictions[i,j,k,l] > maxi): maxi = predictions[i,j,k,l]
-          if (predictions[i,j,k,l]==2 or predictions[i,j,k,l]==3 or predictions[i,j,k,l]==4 or predictions[i,j,k,l]==6 or predictions[i,j,k,l]==8 or predictions[i,j,k,l]==9 or predictions[i,j,k,l]==10):
-              predictions[i,j,k,l] = 11
-  print("Num class: "+str(num_class))
+  # for i in range(batch_size):
+  #   for j in range(predictions.shape[1]):
+  #     for k in range(predictions.shape[2]):
+  #       for l in range(num_class):
+  #         # if (predictions[i,j,k,l] > maxi): maxi = predictions[i,j,k,l]
+  #         if (predictions[i,j,k,l]==2 or predictions[i,j,k,l]==3 or predictions[i,j,k,l]==4 or predictions[i,j,k,l]==6 or predictions[i,j,k,l]==8 or predictions[i,j,k,l]==9 or predictions[i,j,k,l]==10):
+  #             predictions[i,j,k,l] = 11
+  # print("Num class: "+str(num_class))
   
   hist = np.zeros((num_class, num_class))
   for i in range(batch_size):
@@ -167,14 +179,14 @@ def per_class_acc(predictions, label_tensor):
     size = predictions.shape[0]
     num_class = predictions.shape[3]
 
-    for i in range(size):
-      for j in range(predictions.shape[1]):
-        for k in range(predictions.shape[2]):
-          for l in range(num_class):
-            # if (predictions[i,j,k,l] > maxi): maxi = predictions[i,j,k,l]
-            if (predictions[i,j,k,l]==2 or predictions[i,j,k,l]==3 or predictions[i,j,k,l]==4 or predictions[i,j,k,l]==6 or predictions[i,j,k,l]==8 or predictions[i,j,k,l]==9 or predictions[i,j,k,l]==10):
-                predictions[i,j,k,l] = 11
-    print("Num class: "+str(num_class))
+    # for i in range(size):
+    #   for j in range(predictions.shape[1]):
+    #     for k in range(predictions.shape[2]):
+    #       for l in range(num_class):
+    #         # if (predictions[i,j,k,l] > maxi): maxi = predictions[i,j,k,l]
+    #         if (predictions[i,j,k,l]==2 or predictions[i,j,k,l]==3 or predictions[i,j,k,l]==4 or predictions[i,j,k,l]==6 or predictions[i,j,k,l]==8 or predictions[i,j,k,l]==9 or predictions[i,j,k,l]==10):
+    #             predictions[i,j,k,l] = 11
+    # print("Num class: "+str(num_class))
     hist = np.zeros((num_class, num_class))
     for i in range(size):
       hist += fast_hist(labels[i].flatten(), predictions[i].argmax(2).flatten(), num_class)

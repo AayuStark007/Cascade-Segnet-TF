@@ -40,7 +40,7 @@ IMAGE_HEIGHT = 360
 IMAGE_WIDTH = 480
 IMAGE_DEPTH = 3
 
-NUM_CLASSES = 12
+NUM_CLASSES = 6
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 367
 NUM_EXAMPLES_PER_EPOCH_FOR_TEST = 101
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 1
@@ -115,15 +115,15 @@ def cal_loss(logits, labels):
     loss_weight = np.array([
       0.2595,
       0.1826,
-      4.5640,
+      # 4.5640,
       0.1417,
-      0.9051,
+      # 0.9051,
       0.3826,
-      9.6446,
+      # 9.6446,
       1.8418,
-      0.6823,
-      6.2478,
-      7.3614,
+      # 0.6823,
+      # 6.2478,
+      # 7.3614,
       1.0974
     ]) # class 0~11
 
@@ -350,18 +350,25 @@ def test(FLAGS):
     print("Hiding foreground in testing data.")
     for h in range(len(labels)):
       arr = labels[h]
+      arr_new = np.copy(arr)
       # print ("Each size is: "+str(i.shape))
       maxi = 0
       for i in range(arr.shape[0]):
         for j in range(arr.shape[1]):
           for k in range(arr.shape[2]):
             for l in range(arr.shape[3]):
-              if (arr[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
-              if (arr[i,j,k,l]==2 or arr[i,j,k,l]==3 or arr[i,j,k,l]==4 or arr[i,j,k,l]==6 or arr[i,j,k,l]==8 or arr[i,j,k,l]==9 or arr[i,j,k,l]==10):
-                  arr[i,j,k,l] = 11
+              if (arr[i,j,k,l]==3):
+                arr_new[i,j,k,l] = 2
+              elif (arr[i,j,k,l]==5):
+                arr_new[i,j,k,l] = 3
+              elif (arr[i,j,k,l]==7):
+                arr_new[i,j,k,l] = 4
+              elif (arr[i,j,k,l]>=6 or arr[i,j,k,l]==2 or arr[i,j,k,l]==4):
+                arr_new[i,j,k,l] = 5
+              if (arr_new[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
               # print("Here: "+str(arr[i,j,k,l]))
       print ("Processed: "+str(h+1)+"/"+str(len(labels)))
-      labels[h] = arr
+      labels[h] = arr_new
     # labels = tf.convert_to_tensor(arr)
 
 
@@ -444,33 +451,48 @@ def training(FLAGS, is_finetune=False):
           # Hide foreground in training
           arr = labels.eval()
           print("Shape is: "+str(arr.shape))
+          print("Type is: "+str(arr.dtype))
+          arr_new = np.copy(arr)
           maxi = 0
           for i in range(arr.shape[0]):
             for j in range(arr.shape[1]):
               for k in range(arr.shape[2]):
                 for l in range(arr.shape[3]):
-                  if (arr[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
-                  if (arr[i,j,k,l]==2 or arr[i,j,k,l]==4 or arr[i,j,k,l]==6 or arr[i,j,k,l]==8 or arr[i,j,k,l]==9 or arr[i,j,k,l]==10):
-                      arr[i,j,k,l] = 11
+                  if (arr[i,j,k,l]==3):
+                    arr_new[i,j,k,l] = 2
+                  elif (arr[i,j,k,l]==5):
+                    arr_new[i,j,k,l] = 3
+                  elif (arr[i,j,k,l]==7):
+                    arr_new[i,j,k,l] = 4
+                  elif (arr[i,j,k,l]>=6 or arr[i,j,k,l]==2 or arr[i,j,k,l]==4):
+                    arr_new[i,j,k,l] = 5
+                  if (arr_new[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
                   # print("Here: "+str(arr[i,j,k,l]))
           print ("Maximum in training: "+str(maxi))
-          labels = tf.convert_to_tensor(arr)
+          labels = tf.convert_to_tensor(arr_new)
 
           # Hide foreground in validation
           print("Hiding foreground in validation data.")
           arr = val_labels.eval()
           print("Shape is: "+str(arr.shape))
+          arr_new = np.copy(arr)
           maxi = 0
           for i in range(arr.shape[0]):
             for j in range(arr.shape[1]):
               for k in range(arr.shape[2]):
                 for l in range(arr.shape[3]):
-                  if (arr[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
-                  if (arr[i,j,k,l]==2  or arr[i,j,k,l]==4 or arr[i,j,k,l]==6 or arr[i,j,k,l]==8 or arr[i,j,k,l]==9 or arr[i,j,k,l]==10):
-                      arr[i,j,k,l] = 11
+                  if (arr[i,j,k,l]==3):
+                    arr_new[i,j,k,l] = 2
+                  elif (arr[i,j,k,l]==5):
+                    arr_new[i,j,k,l] = 3
+                  elif (arr[i,j,k,l]==7):
+                    arr_new[i,j,k,l] = 4
+                  elif (arr[i,j,k,l]>=6 or arr[i,j,k,l]==2 or arr[i,j,k,l]==4):
+                    arr_new[i,j,k,l] = 5
+                  if (arr_new[i,j,k,l] > maxi): maxi = arr[i,j,k,l]
                   # print("Here: "+str(arr[i,j,k,l]))
           print ("Maximum in validation: "+str(maxi))
-          val_labels = tf.convert_to_tensor(arr)
+          val_labels = tf.convert_to_tensor(arr_new)
 
 
           init = tf.global_variables_initializer()
