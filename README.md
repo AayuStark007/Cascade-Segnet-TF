@@ -1,4 +1,6 @@
 # Tensorflow-SegNet
+
+[![Join the chat at https://gitter.im/Cascade-Segnet-TF/Lobby](https://badges.gitter.im/Cascade-Segnet-TF/Lobby.svg)](https://gitter.im/Cascade-Segnet-TF/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Implement slightly different (see below for detail) [SegNet](http://arxiv.org/abs/1511.00561) in tensorflow,
 successfully trained segnet-basic in CamVid dataset.
 
